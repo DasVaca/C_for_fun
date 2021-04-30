@@ -12,10 +12,12 @@ struct region_t ** identify_regions(struct map_t * map) {
 
     int i, j;
     for (i = 0; i < size; i++) {
+        // There's not a region or the end of the map
         if (map->map[i] == '-' || map->map[i] == '\0') {
             continue;
         }
 
+        // count how many regions there are
         int seen = 0;
 
         for (j = 0; j < rsz; j++) {
@@ -25,17 +27,24 @@ struct region_t ** identify_regions(struct map_t * map) {
                 break;
             }
         }
-
+        
+        // haven't seen the region, so we need to make room for one more guy.
         if (!seen) {
+            // for larger maps is better to allocate a lot of spaces at once, but this is an
+            // example toy.
             r = realloc(r, ++rsz * sizeof(*r));
+            // !!! always check what realloc return, i didn't for the sake of the programs length
 
+            // clean garbage and set initial values
             r[rsz - 1] = calloc(1, sizeof(**r));
-
             r[rsz - 1]->region = map->map[i]; 
             r[rsz - 1]->tot_count = 1; 
             r[rsz - 1]->par_count = 0;
         }
     } 
+
+    // an unelegant null terminator, 
+    // for larger maps it is recommended to store the size somewhere.
     r = realloc(r, ++rsz * sizeof(r));
 
     r[rsz - 1] = NULL; 
@@ -44,6 +53,7 @@ struct region_t ** identify_regions(struct map_t * map) {
 }
 
 void pick_some_coords(struct map_t * m, uint8_t region, int * row, int * col) {
+    // actually we just pick the first one that belongs to that region.
     for (int i = 0; i < m->nrows; i++) {
         for (int j = 0; j < m->ncols; j++) {
             if (m->map[i * m->ncols + j] == region) {
@@ -86,6 +96,7 @@ int walk_on_region(struct map_t * m, struct region_t * r, int row, int col, int 
 }
 
 void count_partial_region(struct region_t ** r, struct map_t * m) {
+    // visited is a matrix n by m where each entry visited is marked with a one
     int * visited = calloc(1, m->nrows * m->ncols * sizeof(*visited));
 
     for (int i = 0; r[i]; i++) {
@@ -95,6 +106,7 @@ void count_partial_region(struct region_t ** r, struct map_t * m) {
 
         pick_some_coords(m, r[i]->region, &row, &col);
 
+        // clean visited for each region
         memset(visited, 0, m->nrows * m->ncols * sizeof(*visited));
 
         walk_on_region(m, r[i], row, col, visited);
@@ -121,10 +133,6 @@ int main(int argc, char * argv[]) {
 
     struct map_t * map = get_map_from_file(argv[1]);
 
-    if (!map) {
-        return 1;
-    }    
-    
     struct region_t ** regions = identify_regions(map);    
 
     puts("\n== Regions ==");
