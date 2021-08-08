@@ -1,9 +1,46 @@
-/* Compiled with gcc 10.2 as follows:
- *  gcc main.c -o main
- */
+#include "util.c"
 
-#include "util.h"
+// Function declarations
+struct region_t ** identify_regions(struct map_t *);
+int walk_on_region(struct map_t * m, struct region_t * r, int row, int col, int * visited);
+void pick_some_coords(struct map_t * m, uint8_t region, int * row, int * col);
+void count_partial_region(struct region_t ** r, struct map_t * m);
 
+int main(int argc, char * argv[]) {
+    if (argc == 1) {
+        print_usage();
+        return 1;
+    }
+
+    struct map_t * map = get_map_from_file(argv[1]);
+
+    struct region_t ** regions = identify_regions(map);    
+
+    puts("\n== Regions ==");
+    for (int i = 0; regions[i]; i++) {
+        printf("%c ", regions[i]->region);
+    }
+    
+    puts("\n== Magic ==");
+    count_partial_region(regions, map);
+
+    puts("\n== Disjoint Regions ==");
+    for (int i = 0; regions[i]; i++) {
+        printf("-> %c is disjoint? %c\n", regions[i]->region, \
+                regions[i]->tot_count != regions[i]->par_count ? 'y': 'n');
+    }
+
+    /* DO NOT FORGET TO GIVE BACK THE MEMORY */
+    for (int i = 0; regions[i]; i++) {
+        free(regions[i]);
+    }
+    free(regions);
+    free(map->map);
+    free(map);
+    return 0;
+}
+
+// Function Implementations
 struct region_t ** identify_regions(struct map_t * map) {
     struct region_t ** r = NULL;
 
@@ -93,6 +130,8 @@ int walk_on_region(struct map_t * m, struct region_t * r, int row, int col, int 
     walk_on_region(m, r, row, col - 1, visited);
     walk_on_region(m, r, row + 1, col, visited);
     walk_on_region(m, r, row - 1, col, visited);
+
+    return 0;
 }
 
 void count_partial_region(struct region_t ** r, struct map_t * m) {
@@ -121,39 +160,4 @@ void count_partial_region(struct region_t ** r, struct map_t * m) {
     }
 
     free(visited);
-}
-
-
-
-int main(int argc, char * argv[]) {
-    if (argc == 1) {
-        print_usage();
-        return 1;
-    }
-
-    struct map_t * map = get_map_from_file(argv[1]);
-
-    struct region_t ** regions = identify_regions(map);    
-
-    puts("\n== Regions ==");
-    for (int i = 0; regions[i]; i++) {
-        printf("%c ", regions[i]->region);
-    }
-    
-    puts("\n== Magic ==");
-    count_partial_region(regions, map);
-
-    puts("\n== Disjoint Regions ==");
-    for (int i = 0; regions[i]; i++) {
-        printf("-> %c is disjoint? %i\n", regions[i]->region, regions[i]->tot_count != regions[i]->par_count);
-    }
-
-    /* DO NOT FORGET TO GIVE BACK THE MEMORY */
-    for (int i = 0; regions[i]; i++) {
-        free(regions[i]);
-    }
-    free(regions);
-    free(map->map);
-    free(map);
-    return 0;
 }

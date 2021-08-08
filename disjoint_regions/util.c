@@ -16,6 +16,12 @@ struct region_t {
     uint32_t par_count;
 };
 
+// Function declarations
+void print_usage();
+struct map_t * get_map_from_file(char *);
+
+
+// Function implementation
 void print_usage() {
     puts("Usage: ./app file_name.txt");
     puts("File name must be of the form");
