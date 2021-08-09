@@ -4,7 +4,7 @@
 /* Note: Checking for null-parsed errors is a pain,
  * so it is omitted. */
 
-struct snake_t * init(int initial_size) {
+struct snake_t * init_snake(int initial_size) {
     /* **************************************************
      * Explode if given size if negative or way too big.
      * See macros.h for the MAX_BUFFER_SIZE
