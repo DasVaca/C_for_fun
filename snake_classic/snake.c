@@ -3,11 +3,11 @@
 
 /* Note: Checking for null-parsed errors is a pain,
  * so it is omitted. */
+#define MAX_BUFFER_SIZE 50
 
-struct snake_t * init_snake(int initial_size) {
+struct snake_t * init_snake(int initial_size, int initial_pos_y, int initial_pos_x) {
     /* **************************************************
      * Explode if given size if negative or way too big.
-     * See macros.h for the MAX_BUFFER_SIZE
      * **************************************************/
 
     /* Sanity check */
@@ -21,12 +21,19 @@ struct snake_t * init_snake(int initial_size) {
     snake->body = calloc(1, sizeof(snake->body));
     snake->body->next = NULL;
 
+    /* Set initial position on head */
+    snake->body->y = initial_pos_y;
+    snake->body->x = initial_pos_x;
+
     /* Fill the rest of the body */
     struct snake_body_t * traveler = snake->body;
     while (--initial_size > 0) {
         traveler->next = calloc(1, sizeof(traveler));
         traveler = traveler->next;
         traveler->next = NULL;
+        /* Set initial position on every cell of the body */
+        traveler->y = initial_pos_y;
+        traveler->x = initial_pos_x;
     }
     
     return snake;
@@ -84,6 +91,34 @@ struct snake_body_t * get_body_at(struct snake_t * snake, int position) {
     }
 
     return body_at;
+}
+
+void move_snake(struct snake_t * snake, int direction) {
+    int y = snake->body->y;
+    int x = snake->body->x;
+
+    int holder_x, holder_y;
+    
+    struct snake_body_t * traveler = snake->body;
+    
+    while ((traveler = traveler->next)) {
+        /* Copy the position of the one in front */
+        holder_x = traveler->x;
+        holder_y = traveler->y;
+
+        traveler->x = x;
+        traveler->y = y;
+
+        x = holder_x;
+        y = holder_y;
+    }
+
+    switch (direction) {
+        case 'u': snake->body->y--; break;
+        case 'r': snake->body->x++; break;
+        case 'd': snake->body->y++; break;
+        case 'l': snake->body->x--; break;
+    }
 }
 
 void destroy_snake(struct snake_t * snake) {
