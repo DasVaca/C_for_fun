@@ -94,6 +94,7 @@ struct snake_body_t * get_body_at(struct snake_t * snake, int position) {
 }
 
 void move_snake(struct snake_t * snake, int direction) {
+    /* Direction should be given as 'u'-up, 'd'-down, etc */
     int y = snake->body->y;
     int x = snake->body->x;
 
@@ -112,7 +113,7 @@ void move_snake(struct snake_t * snake, int direction) {
         x = holder_x;
         y = holder_y;
     }
-
+    /* Move the head at the end */
     switch (direction) {
         case 'u': snake->body->y--; break;
         case 'r': snake->body->x++; break;
