@@ -18,8 +18,8 @@ int is_eating_itself(struct snake_t *);
 
 void move_snake(struct snake_t *, int direction);
 
-void grow_snake(struct snake_t *, int y, int x);
-void shrink_snake(struct snake_t *);
+void grow(struct snake_t *, int direction);
+void shrink(struct snake_t *);
 
 void destroy_snake(struct snake_t * snake);
 

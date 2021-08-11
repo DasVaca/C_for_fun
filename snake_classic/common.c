@@ -13,3 +13,7 @@ int is_dead(struct snake_t * s, int liy, int lsy, int lix, int lsx) {
     /* return non-zero if is dead, 0 otherwise */
     return has_hit_wall(s, liy, lsy, lix, lsx) || is_eating_itself(s);
 }
+
+int has_eated_food(struct snake_t * s, int foody, int foodx) {
+    return s->body->y == foody && s->body->x == foodx;
+}

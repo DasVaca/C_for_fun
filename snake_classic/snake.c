@@ -57,10 +57,18 @@ int is_eating_itself(struct snake_t * snake) {
     return is_eating_itself;
 }
 
-void grow (struct snake_t * snake, int y, int x) {
+void grow (struct snake_t * snake, int direction) {
     /* Add another node on the linked list. */
     struct snake_body_t * last = get_body_at(snake, snake->size);
     last->next = calloc(1, sizeof(last));
+    
+    switch (direction) {
+        case 'u': last->next->y = last->y + 1; break;
+        case 'd': last->next->y = last->y - 1; break;
+        case 'l': last->next->x = last->x + 1; break;
+        case 'r': last->next->x = last->x - 1; break;
+    }
+
     last->next->next = NULL;
     snake->size++;
 }

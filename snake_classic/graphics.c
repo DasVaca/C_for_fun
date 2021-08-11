@@ -7,25 +7,18 @@ void draw_food (WINDOW * win, int y, int x) {
 }
 
 void draw_snake(WINDOW * win, struct snake_t * snake) {
-    static int last_y = -1;
-    static int last_x = -1;
+    /* Clear tail of snake */
+    struct snake_body_t * tail = get_body_at(snake, snake->size);
+    wattron(win, COLOR_PAIR(COLOR_BLACK));
+    mvwaddch(win, tail->y, tail->x, ' ');
+    wattroff(win, COLOR_PAIR(COLOR_BLACK));
 
-    /* it clears tail, so we don't need to clear the entire screen */
-    if (last_y > 0 && last_x > 0) {
-        wattron(win, COLOR_PAIR(COLOR_BLACK));
-        mvwaddch(win, last_y, last_x, ' ');
-        wattroff(win, COLOR_PAIR(COLOR_BLACK));
-    }
-
+    /* Draws the rest of the snake */
     struct snake_body_t * traveler = snake->body;
-
     while (traveler->next) {
         mvwaddch(win, traveler->y, traveler->x, ACS_BLOCK);
         traveler = traveler->next;
     }
-
-    last_y = traveler->y;
-    last_x = traveler->x;
 }
 
 WIN * init_win(int h, int w, int begy, int begx) {

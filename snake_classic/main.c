@@ -24,6 +24,7 @@ int main() {
     SNAKE * snake = init_snake(5, randint(1, gw->h-1), randint(1, gw->w-1)); 
     int foody = randint(1, gw->h-1);
     int foodx = randint(1, gw->w-1);
+    int score = 0;
 
     draw_food(gw->win, foody, foodx);
 
@@ -50,7 +51,21 @@ int main() {
             break;
         }
 
+        if (has_eated_food(snake, foody, foodx)) {
+            foody = randint(1, gw->h-1);
+            foodx = randint(1, gw->w-1);
+            draw_food(gw->win, foody, foodx);
+            
+            grow(snake, input);
+        }
+
         draw_snake(gw->win, snake);
+
+        wrefresh(hw->win);
+        wborder(hw->win, 0, 0, 0, 0, 0, 0, 0, 0);
+        wborder(gw->win, 0, 0, 0, 0, 0, 0, 0, 0);
+        wrefresh(gw->win);
+        wrefresh(hw->win);
     }
 
     destroy_snake(snake);
