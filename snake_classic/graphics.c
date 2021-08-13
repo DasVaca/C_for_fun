@@ -9,9 +9,7 @@ void draw_food (WINDOW * win, int y, int x) {
 void draw_snake(WINDOW * win, struct snake_t * snake) {
     /* Clear tail of snake */
     struct snake_body_t * tail = get_body_at(snake, snake->size);
-    wattron(win, COLOR_PAIR(COLOR_BLACK));
     mvwaddch(win, tail->y, tail->x, ' ');
-    wattroff(win, COLOR_PAIR(COLOR_BLACK));
 
     /* Draws the rest of the snake */
     struct snake_body_t * traveler = snake->body;
@@ -19,6 +17,10 @@ void draw_snake(WINDOW * win, struct snake_t * snake) {
         mvwaddch(win, traveler->y, traveler->x, ACS_BLOCK);
         traveler = traveler->next;
     }
+}
+
+void update_score(WINDOW * win, int new_score) {
+    mvwprintw(win, 1, 2, "Score: %i", new_score);
 }
 
 WIN * init_win(int h, int w, int begy, int begx) {

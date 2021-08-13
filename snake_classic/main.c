@@ -28,8 +28,8 @@ int main() {
 
     draw_food(gw->win, foody, foodx);
 
-    wborder(hw->win, 0, 0, 0, 0, 0, 0, 0, 0);
-    wborder(gw->win, 0, 0, 0, 0, 0, 0, 0, 0);
+    box(hw->win, 0, 0);
+    box(gw->win, 0, 0);
     wrefresh(gw->win);
     wrefresh(hw->win);
 
@@ -57,15 +57,13 @@ int main() {
             draw_food(gw->win, foody, foodx);
             
             grow(snake, input);
+            box(gw->win, 0, 0);
+
+            update_score(hw->win, ++score);
+            wrefresh(hw->win);
         }
 
         draw_snake(gw->win, snake);
-
-        wrefresh(hw->win);
-        wborder(hw->win, 0, 0, 0, 0, 0, 0, 0, 0);
-        wborder(gw->win, 0, 0, 0, 0, 0, 0, 0, 0);
-        wrefresh(gw->win);
-        wrefresh(hw->win);
     }
 
     destroy_snake(snake);
