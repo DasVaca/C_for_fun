@@ -61,15 +61,20 @@ void grow (struct snake_t * snake, int direction) {
     /* Add another node on the linked list. */
     struct snake_body_t * last = get_body_at(snake, snake->size);
     last->next = calloc(1, sizeof(last));
+    // Mimic the position of the last one
+    last->next->y = last->y;
+    last->next->x = last->x;
+
+    last = last->next;
     
     switch (direction) {
-        case 'u': last->next->y = last->y + 1; break;
-        case 'd': last->next->y = last->y - 1; break;
-        case 'l': last->next->x = last->x + 1; break;
-        case 'r': last->next->x = last->x - 1; break;
+        case 'u': last->y++; break;
+        case 'd': last->y--; break;
+        case 'l': last->x++; break;
+        case 'r': last->x--; break;
     }
 
-    last->next->next = NULL;
+    last->next = NULL;
     snake->size++;
 }
 
