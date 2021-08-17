@@ -1,26 +1,12 @@
 #include <stdlib.h>
 #include "graphics.h"
 
-
-void draw_food (WINDOW * win, int y, int x) {
-    mvwaddch(win, y, x, ACS_BLOCK | A_BLINK);
-}
-
-void draw_snake(WINDOW * win, struct snake_t * snake) {
-    /* Clear tail of snake */
-    struct snake_body_t * tail = get_body_at(snake, snake->size);
-    mvwaddch(win, tail->y, tail->x, ' ');
-
-    /* Draws the rest of the snake */
-    struct snake_body_t * traveler = snake->body;
-    while (traveler->next) {
-        mvwaddch(win, traveler->y, traveler->x, ACS_BLOCK);
-        traveler = traveler->next;
-    }
-}
-
-void update_score(WINDOW * win, int new_score) {
-    mvwprintw(win, 1, 2, "Score: %i", new_score);
+void init_graphics() {
+    initscr();
+    noecho();
+    //nocbreak();
+    curs_set(0);
+    start_color();
 }
 
 WIN * init_win(int h, int w, int begy, int begx) {
@@ -39,10 +25,31 @@ WIN * init_win(int h, int w, int begy, int begx) {
     return win;
 }
 
-void init_graphics() {
-    initscr();
-    noecho();
-    nocbreak();
-    curs_set(0);
-    start_color();
+void draw_food (WINDOW * win, int y, int x) {
+    mvwaddch(win, y, x, ACS_BLOCK | A_BLINK);
+}
+
+void draw_snake(WINDOW * win, struct snake_t * snake) {
+    /* Clear tail of snake */
+    struct snake_body_t * tail = get_body_at(snake, snake->size);
+    mvwaddch(win, tail->y, tail->x, ' ');
+
+    /* Draws the rest of the snake */
+    struct snake_body_t * traveler = snake->body;
+    while (traveler->next) {
+        mvwaddch(win, traveler->y, traveler->x, ACS_BLOCK);
+        traveler = traveler->next;
+    }
+}
+
+void update_score(WINDOW * win, int score) {
+    mvwprintw(win, 1, 2, "Score: %3i", score);
+}
+
+void update_size(WINDOW * win, int size) {
+    mvwprintw(win, 3, 2, "Size : %3i", size);
+}
+
+void update_level(WINDOW * win, int level) {
+    mvwprintw(win, 5, 2, "Level: %3i", level);
 }

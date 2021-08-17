@@ -3,7 +3,6 @@
 
 /* Note: Checking for null-parsed errors is a pain,
  * so it is omitted. */
-#define MAX_BUFFER_SIZE 50
 
 struct snake_t * init_snake(int initial_size, int initial_pos_y, int initial_pos_x) {
     /* **************************************************
@@ -11,7 +10,7 @@ struct snake_t * init_snake(int initial_size, int initial_pos_y, int initial_pos
      * **************************************************/
 
     /* Sanity check */
-    if (initial_size < 0 || initial_size > MAX_BUFFER_SIZE) {
+    if (initial_size < 0 || initial_size > MAX_SNAKE_LENGTH) {
         exit(0);
     }
     

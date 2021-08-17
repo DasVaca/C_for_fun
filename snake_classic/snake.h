@@ -1,6 +1,8 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
+#define MAX_SNAKE_LENGTH 50
+
 struct snake_body_t {
     int y, x;
     struct snake_body_t * next;
