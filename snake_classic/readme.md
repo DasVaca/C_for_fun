@@ -3,17 +3,18 @@ You all already know the game, here's an implementation with C using ncurses.
 
 ## Usage
 ```sh
-make main 
+make snake
 ```
-then
+This will create a bunch of object files, you could skipped and compile all together (like *.c *.h), that's not funny though.
+
+Finally in order to play just run
 ```sh
-./main.o <initial-length> <initial-level>
+./snake <initial-length> <initial-level>
 ```
+A file called log.txt will be created, it does what the name suggest.
 > arguments are optional
 
 ## Todo
-- Sanity check on initial arguments.
-- Increase difficulty dynamically
 - Welcome and Game Over windows
 - Colors / Making it more funny
 
