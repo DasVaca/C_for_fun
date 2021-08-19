@@ -10,7 +10,6 @@ typedef struct {
 } WIN;
 
 WIN * init_win(int h, int w, int begy, int begx);
-void init_graphics();
 
 void draw_food(WINDOW *, int y, int x);
 void draw_snake(WINDOW *, struct snake_t * snake);

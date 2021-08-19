@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include "err.h"
 
-FILE * log_stream = NULL;
+static FILE * log_stream = NULL;
 
 int init_log() {
     log_stream = fopen("log.txt", "w");

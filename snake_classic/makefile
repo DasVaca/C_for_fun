@@ -1,5 +1,5 @@
 cc=gcc
-cflags=-Wall -Werror -lncurses -std=c99
+cflags=-Wall -Werror -lncurses -std=c99 -g
 objects=snake.o graphics.o common.o utils.o err.o main.o
 
 snake: $(objects)

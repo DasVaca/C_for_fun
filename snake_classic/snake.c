@@ -1,5 +1,6 @@
-#include "snake.h"
 #include <stdlib.h>
+#include "snake.h"
+#include "err.h"
 
 /* Note: Checking for null-parsed errors is a pain,
  * so it is omitted. */
@@ -15,9 +16,9 @@ struct snake_t * init_snake(int initial_size, int initial_pos_y, int initial_pos
     }
     
     /* Allocate space for the head */
-    struct snake_t * snake = calloc(1, sizeof(snake));
+    struct snake_t * snake = calloc(1, sizeof(*snake));
     snake->size = initial_size;
-    snake->body = calloc(1, sizeof(snake->body));
+    snake->body = calloc(1, sizeof(*snake->body));
     snake->body->next = NULL;
 
     /* Set initial position on head */
@@ -27,7 +28,7 @@ struct snake_t * init_snake(int initial_size, int initial_pos_y, int initial_pos
     /* Fill the rest of the body */
     struct snake_body_t * traveler = snake->body;
     while (--initial_size > 0) {
-        traveler->next = calloc(1, sizeof(traveler));
+        traveler->next = calloc(1, sizeof(*traveler));
         traveler = traveler->next;
         traveler->next = NULL;
         /* Set initial position on every cell of the body */
@@ -59,7 +60,7 @@ int is_eating_itself(struct snake_t * snake) {
 void grow (struct snake_t * snake, int direction) {
     /* Add another node on the linked list. */
     struct snake_body_t * last = get_body_at(snake, snake->size);
-    last->next = calloc(1, sizeof(last));
+    last->next = calloc(1, sizeof(*last));
     // Mimic the position of the last one
     last->next->y = last->y;
     last->next->x = last->x;
@@ -135,13 +136,19 @@ void move_snake(struct snake_t * snake, int direction) {
 }
 
 void destroy_snake(struct snake_t * snake) {
+    log_write("\n== DESTROY SNAKE ==\n");
+
     struct snake_body_t * traveler = snake->body, * to_delete;
 
     while (traveler->next) {
        to_delete = traveler;
        traveler = traveler->next;
+       log_write("free (%i, %i)\n", to_delete->y, to_delete->x);
        free(to_delete);
     }
+
+    log_write("free (%i, %i)\n", traveler->y, traveler->x);
+    log_write("free snake\n");
 
     free(traveler);
     free(snake);

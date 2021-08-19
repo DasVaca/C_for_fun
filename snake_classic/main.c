@@ -16,29 +16,50 @@
 
 typedef struct snake_t SNAKE;
 
+const int levels[] = {5, 3, 2, 1};
+
+void start_game(int, int, int);
+
 int main(int argc, char * argv[]) {
     /* Init log/debug info */
-    if (!init_log()) {
-        puts("Coudn't init log");
-    }
+    if (!init_log()) { puts("Coudn't init log"); }
+    log_write("== LOG START ==\n");
 
-    log_write("main(%i, %s)\n", argc, *argv);
-
-    /* Start graphics and set layout */
-    init_graphics();
-    WIN * hw = init_win(LINES*0.5, COLS*0.2, LINES*0.25, COLS*0.8);
-    WIN * gw = init_win(LINES, COLS*0.8, 0, 0);
-    
     /* To use randint */
     srand(time(NULL));
 
     /* Game macros and initial values */
-    const int levels[] = {5, 3, 2, 1};
     int score = 0;
-    int initial_length = (argc >= 2 && is_number(argv[1])) ?\
-                         atoi(argv[1]) % MAX_SNAKE_LENGTH: DEFAULT_SNAKE_LENGTH;
-    int level = (argc >= 3 && is_number(argv[2])) ?\
-                atoi(argv[2]) % MAX_LEVEL: DEFAULT_LEVEL;
+    int initial_length = DEFAULT_SNAKE_LENGTH; 
+    int level = DEFAULT_LEVEL;
+
+    if (argc >= 2 && is_number(argv[1])) {
+        initial_length = min(atoi(argv[1]), DEFAULT_SNAKE_LENGTH);
+    }
+
+    if (argc >= 3 && is_number(argv[2])) {
+        level = min(atoi(argv[2]), DEFAULT_LEVEL);
+    }
+
+    /* Start ncurses */
+    initscr();
+    noecho();
+    curs_set(0);
+    start_color();
+
+    start_game(score, level, initial_length);
+
+    endwin();
+    end_log();
+    return 0;
+}
+
+void start_game(int score, int level, int initial_length) {
+    log_write("\n== START GAME ==\n");
+
+    /* Set layout */
+    WIN * hw = init_win(LINES*0.5, COLS*0.2, LINES*0.25, COLS*0.8);
+    WIN * gw = init_win(LINES, COLS*0.8, 0, 0);
 
     /* Set "refresh rate" and support for arrow keys */
     halfdelay(levels[level]);
@@ -60,7 +81,7 @@ int main(int argc, char * argv[]) {
     wrefresh(gw->win);
     wrefresh(hw->win);
 
-    int input, last_input = 'u'; // default movements set to up
+    int input, last_input = 'u';
     while( (input = wgetch(gw->win)) != 'q') {
         switch (input) {
             case KEY_UP: input = 'u'; break;
@@ -75,10 +96,12 @@ int main(int argc, char * argv[]) {
         move_snake(snake, input);
 
         if (is_dead(snake, 1, gw->h-2, 1,  gw->w-2)) {
+            log_write("dead");
             break;
         }
 
         if (has_eated_food(snake, foody, foodx)) {
+            log_write("eat");
             foody = randint(1, gw->h-1);
             foodx = randint(1, gw->w-1);
             draw_food(gw->win, foody, foodx);
@@ -101,7 +124,8 @@ int main(int argc, char * argv[]) {
     }
 
     destroy_snake(snake);
-    endwin();
-    end_log();
-    return 0;
+    delwin(hw->win);
+    delwin(gw->win);
+    free(hw);
+    free(gw);
 }
