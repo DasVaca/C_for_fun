@@ -1,6 +1,6 @@
 cc=gcc
 cflags=-Wall -Werror -lncurses -std=c99
-objects=snake.o graphics.o common.o utils.o main.o
+objects=snake.o graphics.o common.o utils.o err.o main.o
 
 snake: $(objects)
 	$(cc) $(cflags) $^ -o snake

@@ -4,7 +4,6 @@
 void init_graphics() {
     initscr();
     noecho();
-    //nocbreak();
     curs_set(0);
     start_color();
 }
